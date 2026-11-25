@@ -43,6 +43,19 @@ pip install pymupdf pdfplumber pypdf openpyxl pillow numpy rapidocr-onnxruntime
 python app_gui.py
 ```
 
+### Organização do código
+
+| Arquivo | Para que serve |
+| --- | --- |
+| `app_gui.py` | Só a janela (Tkinter) e a linha de comando. Usa o motor da pasta `nucleo/`. |
+| `nucleo/motores.py` | Bibliotecas opcionais (PyMuPDF, pdfplumber, pypdf, PIL, RapidOCR, Tesseract) e se cada uma está disponível. |
+| `nucleo/ocr.py` | Tratamento de imagem e OCR com reconstrução das linhas pela posição das caixas. |
+| `nucleo/pdf_texto.py` | Leitura de PDF de texto (PyMuPDF por trechos; pdfplumber e pypdf de reserva). |
+| `nucleo/pedido.py` | Pedido de compra: cabeçalho, produtos e a planilha por filial. |
+| `nucleo/generico.py` | Aba "Qualquer PDF". |
+
+O motor não depende do Tkinter: o mesmo código serve ao `.exe` e ao site.
+
 ### Testes
 
 ```powershell
