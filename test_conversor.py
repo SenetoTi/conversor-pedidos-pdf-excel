@@ -12,7 +12,7 @@ import tempfile
 import fitz
 from openpyxl import load_workbook
 
-import app_gui
+from nucleo import generico, pedido
 
 EXEMPLOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "exemplos")
 PEDIDO_TEXTO = os.path.join(EXEMPLOS, "pedido_texto.pdf")
@@ -27,7 +27,7 @@ def produtos(caminho_xlsx):
 
 def test_pedido_texto():
     saida = os.path.join(tempfile.gettempdir(), "test_pedido_texto.xlsx")
-    filiais, avisos = app_gui.extrair_pdf_para_excel(PEDIDO_TEXTO, saida)
+    filiais, avisos = pedido.extrair_pdf_para_excel(PEDIDO_TEXTO, saida)
     assert (filiais, avisos) == (5, 0), (filiais, avisos)  # avisos 0 = cada filial bate com o Total Geral
     prods = produtos(saida)
     assert len(prods) == 160, len(prods)
@@ -38,7 +38,7 @@ def test_pedido_texto():
 
 def test_pedido_imagem():
     saida = os.path.join(tempfile.gettempdir(), "test_pedido_imagem.xlsx")
-    filiais, avisos = app_gui.extrair_pdf_para_excel(PEDIDO_IMAGEM, saida)
+    filiais, avisos = pedido.extrair_pdf_para_excel(PEDIDO_IMAGEM, saida)
     assert (filiais, avisos) == (2, 0), (filiais, avisos)
     assert len(produtos(saida)) == 59
     os.remove(saida)
@@ -47,7 +47,7 @@ def test_pedido_imagem():
 def test_generico_tabela():
     """Aba 'Qualquer PDF': cada campo da tabela vai para uma coluna e números viram números."""
     saida = os.path.join(tempfile.gettempdir(), "test_generico.xlsx")
-    assert app_gui.converter_pdf_generico(PEDIDO_TEXTO, saida) == 10
+    assert generico.converter_pdf_generico(PEDIDO_TEXTO, saida) == 10
     linhas = load_workbook(saida)["Pág 1"].iter_rows(values_only=True)
     item = [c for c in next(r for r in linhas if any(str(c).isdigit() and len(str(c)) == 13 for c in r)) if c is not None]
     assert item[3] == "CX  1" and all(isinstance(c, (int, float)) for c in item[4:]), item
@@ -60,7 +60,7 @@ def test_generico_texto_corrido():
     doc = fitz.open()
     doc.new_page().insert_text((72, 72), "Relatorio mensal\nLinha de texto corrido sem tabela")
     doc.save(pdf)
-    app_gui.converter_pdf_generico(pdf, saida)
+    generico.converter_pdf_generico(pdf, saida)
     linhas = list(load_workbook(saida).active.iter_rows(values_only=True))
     assert linhas[:2] == [("Relatorio mensal",), ("Linha de texto corrido sem tabela",)], linhas
     os.remove(saida)
@@ -69,12 +69,12 @@ def test_generico_texto_corrido():
 
 def test_erros_ocr():
     """Erros de OCR vistos no pedido Mabel: espaço após o ponto de milhar e ':' colado nos códigos."""
-    assert app_gui.normalizar_linha_ocr("0,00 1. 800,00") == "0,00 1.800,00"
-    assert app_gui.normalizar_linha_ocr("544986:7908008824945") == "544986 7908008824945"
+    assert pedido.normalizar_linha_ocr("0,00 1. 800,00") == "0,00 1.800,00"
+    assert pedido.normalizar_linha_ocr("544986:7908008824945") == "544986 7908008824945"
     linhas = ["ARUNA IMPORTADORA LTDA CNPJ:35.003.064/0002-01",
               "MABEL COMERCIO DE IMPORTADOS LTDA CNPJ: 00.527.682/0001-95",
               "Peso Total: 3.756,000 Total Geral: 43. 563,60"]
-    info = app_gui.extrair_dados_cabecalho_rodape(linhas)
+    info = pedido.extrair_dados_cabecalho_rodape(linhas)
     assert info["total_geral"] == "43.563,60", info["total_geral"]
     assert (info["razao_social"], info["fornecedor"]) == ("ARUNA IMPORTADORA LTDA", "MABEL COMERCIO DE IMPORTADOS LTDA"), info
 
