@@ -91,6 +91,15 @@ python test_base.py
 
 `test_base.py` cria os próprios arquivos de exemplo, com dados inventados. As leituras rodam sempre; os testes com banco só rodam com `TEST_DATABASE_URL` (ex.: `postgresql://postgres:SENHA@localhost:5432/conversor_teste`), num schema temporário que é apagado no fim.
 
+
+### Planilha do pedido com os dados da base
+
+Com a base (conexão PostgreSQL) a planilha ganha, depois do Total: Preço de venda, NCM, CEST, IPI (%), Qtd. embalagem, Valor Tabela comprado e Fidelidade da NF, e a coluna Conferência. A busca é por código de barras e, se não achar, pelo Código ERP. Produto fora da base e NCM sem alíquota saem como CONFERIR em vermelho; compra R$ 0,00 sai em vermelho. A Fidelidade é um texto livre (vazio sai vazio). Sem conexão, a planilha sai como antes e o log avisa.
+
+```
+python test_pedido_base.py   # com TEST_DATABASE_URL para o teste com base
+```
+
 Os testes que dependem de pedidos reais usam PDFs na pasta `exemplos/` (`pedido_texto.pdf` e `pedido_imagem.pdf`). Essa pasta não vai para o GitHub porque os pedidos têm dados de clientes; sem ela, esses testes são pulados.
 
 ### Gerando o `.exe`

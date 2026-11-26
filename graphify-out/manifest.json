@@ -6,38 +6,38 @@
     "semantic_hash": ""
   },
   "base/__init__.py": {
-    "mtime": 1795704250.243855,
-    "seen": 1795704485.02313,
+    "mtime": 1795705202.9111865,
+    "seen": 1795716593.2542472,
     "ast_hash": "2991df710771a02f1b40a15955d17741",
     "semantic_hash": ""
   },
   "base/__main__.py": {
-    "mtime": 1795704461.4518626,
-    "seen": 1795704485.0231323,
+    "mtime": 1795705202.9111865,
+    "seen": 1795716593.2542503,
     "ast_hash": "1447b7624bcbe27efb36507971033e0c",
     "semantic_hash": ""
   },
   "base/busca.py": {
-    "mtime": 1795704301.6558568,
-    "seen": 1795704485.0231338,
+    "mtime": 1795705202.9111865,
+    "seen": 1795716593.2542515,
     "ast_hash": "84eb4496fc61535dfe54b447f1d7f301",
     "semantic_hash": ""
   },
   "base/conexao.py": {
-    "mtime": 1795704369.3718593,
-    "seen": 1795704485.023135,
+    "mtime": 1795705202.9111865,
+    "seen": 1795716593.254253,
     "ast_hash": "de9f506e85f7c2a6605da1bd1520af7a",
     "semantic_hash": ""
   },
   "base/importadores.py": {
-    "mtime": 1795704380.3998597,
-    "seen": 1795704485.0231357,
+    "mtime": 1795705202.9111865,
+    "seen": 1795716593.2542539,
     "ast_hash": "189dfd5373480e3babe2ad5087e9356e",
     "semantic_hash": ""
   },
   "base/normalizar.py": {
-    "mtime": 1795704262.9638555,
-    "seen": 1795704485.0231369,
+    "mtime": 1795705202.9111865,
+    "seen": 1795716593.2542548,
     "ast_hash": "180d60646880cf10df0a8e71158ee104",
     "semantic_hash": ""
   },
@@ -78,14 +78,14 @@
     "semantic_hash": ""
   },
   "nucleo/pedido.py": {
-    "mtime": 1795703810.8449779,
-    "seen": 1795704485.0231438,
-    "ast_hash": "5cd069c418bdf46a3f3ea7ef9988558a",
+    "mtime": 1795716368.3074892,
+    "seen": 1795716593.2543485,
+    "ast_hash": "6c21327d2dafc2648d402abbcbd023db",
     "semantic_hash": ""
   },
   "test_base.py": {
-    "mtime": 1795704359.767859,
-    "seen": 1795704485.0231445,
+    "mtime": 1795705202.913079,
+    "seen": 1795716593.2543495,
     "ast_hash": "020136f84823e41183c34233f1bb4552",
     "semantic_hash": ""
   },
@@ -96,9 +96,15 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795704476.599863,
-    "seen": 1795704485.023146,
+    "mtime": 1795705202.9111865,
+    "seen": 1795716593.2543652,
     "ast_hash": "b0a1b3718a042acda5b4af9a57c03a4c",
+    "semantic_hash": ""
+  },
+  "test_pedido_base.py": {
+    "mtime": 1795716588.7238863,
+    "seen": 1795716593.254364,
+    "ast_hash": "c7b25bf6394491d27ba04219585bd9d1",
     "semantic_hash": ""
   }
 }

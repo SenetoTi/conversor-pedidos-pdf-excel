@@ -1,17 +1,17 @@
 # Graph Report - conversor-pedidos-pdf-excel  (2026-11-26)
 
 ## Corpus Check
-- 18 files · ~13,776 words
+- 19 files · ~14,865 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: .bat 2, (none) 1, .spec 1)
 
 ## Summary
-- 204 nodes · 403 edges · 9 communities (8 shown, 1 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.86)
+- 222 nodes · 445 edges · 9 communities (8 shown, 1 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 19 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `08dc74b9`
+- Built from commit: `8e7cf85a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -31,24 +31,24 @@
 2. `converter_pdf_generico()` - 13 edges
 3. `ler_fiscal()` - 11 edges
 4. `normalizar_barras()` - 11 edges
-5. `ler_precos()` - 10 edges
-6. `extrair_texto_pagina()` - 10 edges
-7. `extrair_pdf_para_excel()` - 10 edges
-8. `buscar_produtos()` - 9 edges
-9. `ErroImportacao` - 9 edges
-10. `arquivos()` - 9 edges
+5. `extrair_pdf_para_excel()` - 10 edges
+6. `com_base()` - 10 edges
+7. `extrair_texto_pagina()` - 10 edges
+8. `ler_precos()` - 10 edges
+9. `arquivos()` - 10 edges
+10. `buscar_produtos()` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Base de produtos (PostgreSQL)` --references--> `buscar_produtos()`  [INFERRED]
   README.md → base/busca.py
-- `task()` --calls--> `converter_pdf_generico()`  [EXTRACTED]
-  app_gui.py → nucleo/generico.py
-- `task()` --calls--> `extrair_texto_pagina()`  [EXTRACTED]
-  app_gui.py → nucleo/pdf_texto.py
+- `_dados_da_base()` --calls--> `buscar_produtos()`  [INFERRED]
+  nucleo/pedido.py → base/busca.py
+- `task()` --calls--> `extrair_dados_cabecalho_rodape()`  [EXTRACTED]
+  app_gui.py → nucleo/pedido.py
+- `task()` --calls--> `extrair_produtos_inteligente()`  [EXTRACTED]
+  app_gui.py → nucleo/pedido.py
 - `task()` --calls--> `extrair_pdf_para_excel()`  [EXTRACTED]
   app_gui.py → nucleo/pedido.py
-- `test_normalizar()` --calls--> `normalizar_barras()`  [EXTRACTED]
-  test_base.py → base/normalizar.py
 
 ## Import Cycles
 - None detected.
@@ -60,24 +60,24 @@ Cohesion: 0.09
 Nodes (15): coluna_da_caixa(), converter_pdf_generico(), detectar_colunas(), valor_celula(), agrupar_caixas_em_linhas(), caixas_rapidocr(), executar_ocr_com_reconstrucao(), _ocr_caixas() (+7 more)
 
 ### Community 1 - "importadores.py"
-Cohesion: 0.14
-Nodes (15): conectar(), criar_schema(), url_do_banco(), _aviso_contagem(), ErroImportacao, _gravar(), importar_fiscal(), importar_precos() (+7 more)
+Cohesion: 0.15
+Nodes (14): conectar(), criar_schema(), url_do_banco(), _aviso_contagem(), ErroImportacao, _gravar(), importar_fiscal(), importar_precos() (+6 more)
 
 ### Community 2 - "test_base.py"
-Cohesion: 0.12
-Nodes (16): normalizar_cest(), normalizar_ncm(), numero(), sem_acento(), apagar_schema(), arquivos(), com_banco(), criar_csv() (+8 more)
+Cohesion: 0.22
+Nodes (11): apagar_schema(), arquivos(), com_banco(), criar_csv(), criar_docx(), criar_xlsx(), main(), test_arquivo_errado_recusado() (+3 more)
 
 ### Community 4 - "ConversorApp"
-Cohesion: 0.16
-Nodes (5): ConversorApp, task(), sucesso(), task(), main()
+Cohesion: 0.15
+Nodes (6): ConversorApp, task(), sucesso(), task(), task(), main()
 
 ### Community 5 - "pedido.py"
-Cohesion: 0.15
-Nodes (8): task(), analisar_codigos_prefixo(), extrair_dados_cabecalho_rodape(), extrair_pdf_para_excel(), extrair_produtos_inteligente(), limpar_numero(), normalizar_linha_ocr(), test_erros_ocr()
+Cohesion: 0.09
+Nodes (19): analisar_codigos_prefixo(), _dados_da_base(), extrair_dados_cabecalho_rodape(), extrair_pdf_para_excel(), extrair_produtos_inteligente(), gerar_planilha(), limpar_numero(), _linha_da_base() (+11 more)
 
 ### Community 6 - "busca.py"
-Cohesion: 0.19
-Nodes (5): _achar(), aliquota_do_ncm(), buscar_produtos(), _indexar(), Produto
+Cohesion: 0.11
+Nodes (11): _achar(), aliquota_do_ncm(), buscar_produtos(), _indexar(), Produto, normalizar_barras(), normalizar_cest(), normalizar_ncm() (+3 more)
 
 ### Community 7 - "test_conversor.py"
 Cohesion: 0.26
@@ -93,17 +93,17 @@ Nodes (12): Base de produtos (PostgreSQL), Como funciona, Como usar, Conferênci
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `buscar_produtos()` connect `busca.py` to `Conversor PDF → Excel`, `importadores.py`?**
-  _High betweenness centrality (0.134) - this node is a cross-community bridge._
+- **Why does `buscar_produtos()` connect `busca.py` to `Conversor PDF → Excel`, `importadores.py`, `pedido.py`?**
+  _High betweenness centrality (0.139) - this node is a cross-community bridge._
 - **Should `generico.py` be split into smaller, more focused modules?**
   _Cohesion score 0.08961593172119488 - nodes in this community are weakly interconnected._
-- **Why does `ConversorApp` connect `ConversorApp` to `motores.py`?**
-  _High betweenness centrality (0.113) - this node is a cross-community bridge._
-- **Should `importadores.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.13825757575757575 - nodes in this community are weakly interconnected._
 - **Why does `Base de produtos (PostgreSQL)` connect `Conversor PDF → Excel` to `busca.py`?**
-  _High betweenness centrality (0.112) - this node is a cross-community bridge._
-- **Should `test_base.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.12473118279569892 - nodes in this community are weakly interconnected._
+  _High betweenness centrality (0.103) - this node is a cross-community bridge._
+- **Should `importadores.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.14623655913978495 - nodes in this community are weakly interconnected._
+- **Why does `ConversorApp` connect `ConversorApp` to `motores.py`?**
+  _High betweenness centrality (0.101) - this node is a cross-community bridge._
 - **Should `motores.py` be split into smaller, more focused modules?**
   _Cohesion score 0.12121212121212122 - nodes in this community are weakly interconnected._
+- **Should `ConversorApp` be split into smaller, more focused modules?**
+  _Cohesion score 0.1471861471861472 - nodes in this community are weakly interconnected._
