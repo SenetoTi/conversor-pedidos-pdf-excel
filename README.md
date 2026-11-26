@@ -53,14 +53,43 @@ python app_gui.py
 | `nucleo/pdf_texto.py` | Leitura de PDF de texto (PyMuPDF por trechos; pdfplumber e pypdf de reserva). |
 | `nucleo/pedido.py` | Pedido de compra: cabeçalho, produtos e a planilha por filial. |
 | `nucleo/generico.py` | Aba "Qualquer PDF". |
+| `base/` | Base de produtos no PostgreSQL (banco `conversor`): NCM, CEST, IPI, embalagem, custo, compra e venda. Veja abaixo. |
 
 O motor não depende do Tkinter: o mesmo código serve ao `.exe` e ao site.
+
+### Base de produtos (PostgreSQL)
+
+Guarda no PC os dados que completam o pedido, para ninguém precisar enviar planilha a cada conversão. Não faz parte do `.exe`: serve ao site na Central de Gestão.
+
+```powershell
+pip install "psycopg[binary]" python-docx openpyxl
+$env:DATABASE_URL = "postgresql://USUARIO:SENHA@localhost:5432/conversor"   # banco "conversor", separado do Conciliador
+python -m base criar-schema
+python -m base validar fiscal AtualiProdutos.csv      # só lê e mostra avisos, sem banco
+python -m base fiscal AtualiProdutos.csv --email voce@empresa
+python -m base precos "todos os produtos.xlsx" --email voce@empresa
+python -m base tipi tipi.docx --email voce@empresa
+python -m base resumo
+```
+
+| Arquivo | Tabela | O que lê |
+| --- | --- | --- |
+| `AtualiProdutos.csv` | `produtos_fiscal` | Código interno, código de barras, NCM e CEST. CSV em Latin-1, com o bloco PIS/COFINS no topo. O %IPI deste arquivo não é usado. |
+| `todos_os_produtos.xlsx` | `produtos_precos` | Colunas fixas: G embalagem, J custo, K compra, L venda (o cabeçalho da planilha é desalinhado). |
+| `tipi.docx` | `tipi` | Alíquota de IPI por NCM de 8 dígitos; "NT" vale 0. |
+
+- Cada importação troca só a sua tabela, numa transação: se algo falhar ou o arquivo estiver errado, a base antiga fica como está. O histórico (quem, quando, avisos) fica em `importacoes`.
+- Busca (`base.buscar_produtos`): primeiro pelo código de barras, depois pelo código. A alíquota vem do NCM inteiro; se ele não está na TIPI, tenta os 7, 6, 5 e 4 primeiros dígitos, mas só quando todos os NCMs da TIPI com esse início têm a mesma alíquota. Sem alíquota, o campo fica vazio (vira `CONFERIR` na planilha).
+- Os arquivos reais têm dados da empresa: ficam só no PC (`.gitignore` bloqueia `*.csv`, `*.xlsx`, `*.docx` e a pasta `Base de dados de teste/`).
 
 ### Testes
 
 ```powershell
 python test_conversor.py
+python test_base.py
 ```
+
+`test_base.py` cria os próprios arquivos de exemplo, com dados inventados. As leituras rodam sempre; os testes com banco só rodam com `TEST_DATABASE_URL` (ex.: `postgresql://postgres:SENHA@localhost:5432/conversor_teste`), num schema temporário que é apagado no fim.
 
 Os testes que dependem de pedidos reais usam PDFs na pasta `exemplos/` (`pedido_texto.pdf` e `pedido_imagem.pdf`). Essa pasta não vai para o GitHub porque os pedidos têm dados de clientes; sem ela, esses testes são pulados.
 

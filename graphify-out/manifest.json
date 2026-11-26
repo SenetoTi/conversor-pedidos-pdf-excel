@@ -1,0 +1,104 @@
+{
+  "app_gui.py": {
+    "mtime": 1795703810.8439634,
+    "seen": 1795704485.0231242,
+    "ast_hash": "02e94594003d036efc44ea282afb27ad",
+    "semantic_hash": ""
+  },
+  "base/__init__.py": {
+    "mtime": 1795704250.243855,
+    "seen": 1795704485.02313,
+    "ast_hash": "2991df710771a02f1b40a15955d17741",
+    "semantic_hash": ""
+  },
+  "base/__main__.py": {
+    "mtime": 1795704461.4518626,
+    "seen": 1795704485.0231323,
+    "ast_hash": "1447b7624bcbe27efb36507971033e0c",
+    "semantic_hash": ""
+  },
+  "base/busca.py": {
+    "mtime": 1795704301.6558568,
+    "seen": 1795704485.0231338,
+    "ast_hash": "84eb4496fc61535dfe54b447f1d7f301",
+    "semantic_hash": ""
+  },
+  "base/conexao.py": {
+    "mtime": 1795704369.3718593,
+    "seen": 1795704485.023135,
+    "ast_hash": "de9f506e85f7c2a6605da1bd1520af7a",
+    "semantic_hash": ""
+  },
+  "base/importadores.py": {
+    "mtime": 1795704380.3998597,
+    "seen": 1795704485.0231357,
+    "ast_hash": "189dfd5373480e3babe2ad5087e9356e",
+    "semantic_hash": ""
+  },
+  "base/normalizar.py": {
+    "mtime": 1795704262.9638555,
+    "seen": 1795704485.0231369,
+    "ast_hash": "180d60646880cf10df0a8e71158ee104",
+    "semantic_hash": ""
+  },
+  "index.py": {
+    "mtime": 1795703810.8441064,
+    "seen": 1795704485.0231376,
+    "ast_hash": "97f59f416cabc91e20fb70f1b28893f3",
+    "semantic_hash": ""
+  },
+  "nucleo/__init__.py": {
+    "mtime": 1795703810.8441064,
+    "seen": 1795704485.0231385,
+    "ast_hash": "32b54214a60a94a7d9755a10fd98be87",
+    "semantic_hash": ""
+  },
+  "nucleo/generico.py": {
+    "mtime": 1795703810.8449779,
+    "seen": 1795704485.0231395,
+    "ast_hash": "085a99017cd1549d3983c258c4719ece",
+    "semantic_hash": ""
+  },
+  "nucleo/motores.py": {
+    "mtime": 1795703810.8449779,
+    "seen": 1795704485.0231407,
+    "ast_hash": "815bef5ebd4cdfda656e5731208996ca",
+    "semantic_hash": ""
+  },
+  "nucleo/ocr.py": {
+    "mtime": 1795703810.8449779,
+    "seen": 1795704485.0231419,
+    "ast_hash": "be410bc45f82b69f51477b214813e6da",
+    "semantic_hash": ""
+  },
+  "nucleo/pdf_texto.py": {
+    "mtime": 1795703810.8449779,
+    "seen": 1795704485.0231426,
+    "ast_hash": "0e574bda1bd66ba658e7a9dcdd25be0d",
+    "semantic_hash": ""
+  },
+  "nucleo/pedido.py": {
+    "mtime": 1795703810.8449779,
+    "seen": 1795704485.0231438,
+    "ast_hash": "5cd069c418bdf46a3f3ea7ef9988558a",
+    "semantic_hash": ""
+  },
+  "test_base.py": {
+    "mtime": 1795704359.767859,
+    "seen": 1795704485.0231445,
+    "ast_hash": "020136f84823e41183c34233f1bb4552",
+    "semantic_hash": ""
+  },
+  "test_conversor.py": {
+    "mtime": 1795703810.8449779,
+    "seen": 1795704485.0231452,
+    "ast_hash": "08e3c57941136894d6ac78e47bfe76a3",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1795704476.599863,
+    "seen": 1795704485.023146,
+    "ast_hash": "b0a1b3718a042acda5b4af9a57c03a4c",
+    "semantic_hash": ""
+  }
+}
