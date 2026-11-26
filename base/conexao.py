@@ -9,10 +9,10 @@ SCHEMA_SQL = Path(__file__).with_name("schema.sql")
 
 
 def url_do_banco():
-    url = os.environ.get("DATABASE_URL", "").strip()
+    url = os.environ.get("CONVERSOR_DATABASE_URL", "").strip()
     if not url:
         raise RuntimeError(
-            "Defina a variável de ambiente DATABASE_URL, por exemplo "
+            "Defina a variável de ambiente CONVERSOR_DATABASE_URL, por exemplo "
             "postgresql://USUARIO:SENHA@localhost:5432/conversor"
         )
     return url

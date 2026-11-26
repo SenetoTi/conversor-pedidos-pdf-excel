@@ -1,4 +1,4 @@
-"""Linha de comando da base. Precisa de DATABASE_URL.
+"""Linha de comando da base. Precisa de CONVERSOR_DATABASE_URL (não é a DATABASE_URL do Conciliador).
 
     python -m base validar fiscal|precos|tipi ARQUIVO     (só lê e mostra os avisos; não usa o banco)
     python -m base criar-schema

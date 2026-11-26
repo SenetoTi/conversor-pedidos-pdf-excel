@@ -15,7 +15,7 @@ from fastapi.testclient import TestClient
 from openpyxl import load_workbook
 
 os.environ["ADMIN_EMAILS"] = "chefe@empresa.com, outro@empresa.com"
-os.environ.pop("DATABASE_URL", None)
+os.environ.pop("CONVERSOR_DATABASE_URL", None)
 
 import test_base
 from web import app as site
