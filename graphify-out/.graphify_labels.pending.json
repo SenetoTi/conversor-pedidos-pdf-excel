@@ -2,9 +2,9 @@
   "0": "generico.py",
   "1": "importadores.py",
   "2": "test_base.py",
-  "3": "motores.py",
+  "3": "index.py",
   "4": "ConversorApp",
-  "5": "pedido.py",
+  "5": "test_pedido_base.py",
   "6": "busca.py",
   "7": "test_conversor.py",
   "8": "Conversor PDF → Excel"
