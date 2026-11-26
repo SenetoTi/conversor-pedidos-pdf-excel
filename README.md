@@ -150,4 +150,4 @@ python -m uvicorn web.app:app --host 127.0.0.1 --port 8225 --proxy-headers
 python test_web.py   # com TEST_DATABASE_URL para a parte da base
 ```
 
-Instalação no Windows (banco, `iniciar.bat`, cadastro na tela Aplicativos): Etapa 5, não verificado no Windows.
+Instalação no Windows (banco, tarefa do Agendador, cadastro na tela Aplicativos): veja `docs/INSTALACAO-WEB.md` (não verificado no Windows).
