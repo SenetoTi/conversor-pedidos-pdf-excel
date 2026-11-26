@@ -1,0 +1,25 @@
+{% extends "layout.html" %}{% set pagina_atual = 'converter' %}{% block corpo %}
+<h1>Converter PDF em Excel</h1>
+<div class="abas">
+<a class="btn" href="{{ PREFIXO }}/?aba=pedido" {% if aba != 'generico' %}aria-current="page"{% endif %}>Pedido de compra</a>
+<a class="btn" href="{{ PREFIXO }}/?aba=generico" {% if aba == 'generico' %}aria-current="page"{% endif %}>Qualquer PDF</a>
+</div>
+{% if aba == 'generico' %}
+<form class="cartao" method="post" action="{{ PREFIXO }}/generico" enctype="multipart/form-data">
+<p class="guia">Converte qualquer PDF mantendo a disposição visual: cada linha vira uma linha da planilha.</p>
+<label>PDF <input type="file" name="pdf" accept="application/pdf,.pdf" required></label>
+<label class="marcar"><input type="checkbox" name="ocr" value="true"> Forçar OCR em todas as páginas (para PDF escaneado)</label>
+<button class="principal" type="submit">Converter</button>
+</form>
+{% else %}
+<form class="cartao" method="post" action="{{ PREFIXO }}/pedido" enctype="multipart/form-data">
+<p class="guia">Gera uma planilha por filial com os itens do pedido{% if com_base %} e os dados da base (preço de venda, NCM, CEST, IPI, embalagem, valor tabela){% endif %}.</p>
+{% if not com_base %}<p class="aviso atencao">Base de produtos não configurada: a planilha sai sem as colunas da base.</p>{% endif %}
+<label>PDF do pedido <input type="file" name="pdf" accept="application/pdf,.pdf" required></label>
+<label>Fidelidade da NF (opcional, vai em todas as linhas) <input type="text" name="fidelidade" maxlength="200" autocomplete="off"></label>
+<label class="marcar"><input type="checkbox" name="ocr" value="true"> Forçar OCR em todas as páginas (para PDF escaneado)</label>
+<button class="principal" type="submit">Converter</button>
+</form>
+{% endif %}
+<p class="guia">Depois do envio a página mostra o andamento. A leitura por OCR pode levar alguns minutos.</p>
+{% endblock %}

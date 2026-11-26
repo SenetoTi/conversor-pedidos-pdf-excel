@@ -1,0 +1,31 @@
+{% extends "layout.html" %}{% set pagina_atual = 'converter' %}{% block corpo %}
+<h1>{{ t.nome }}</h1>
+<div id="situacao" aria-live="polite">
+{% if t.estado == 'pronto' %}<p class="aviso ok">Pronto. {{ t.resumo }}</p>
+{% elif t.estado == 'erro' %}<p class="aviso erro" role="alert">Não foi possível converter: {{ t.erro }}</p>
+{% else %}<p class="aviso atencao">Processando... Não feche esta página. ({{ 'na fila' if t.estado == 'fila' else 'em andamento' }})</p>{% endif %}
+</div>
+<p>
+<a id="baixar" class="btn" href="{{ PREFIXO }}/trabalho/{{ t.id }}/baixar" {% if t.estado != 'pronto' %}hidden{% endif %}>Baixar Excel</a>
+<a class="btn" href="{{ PREFIXO }}/">Converter outro PDF</a>
+</p>
+<h2>Andamento</h2>
+<pre class="log" id="log">{{ t.log[-30:] | join('\n') }}</pre>
+{% if t.estado in ('fila', 'processando') %}
+<script>
+const base = "{{ PREFIXO }}/trabalho/{{ t.id }}";
+async function ver() {
+  try {
+    const r = await fetch(base + "/estado", {headers: {"Accept": "application/json"}});
+    if (r.ok) {
+      const e = await r.json();
+      document.getElementById("log").textContent = e.log.join("\n");
+      if (e.estado === "pronto" || e.estado === "erro") { location.reload(); return; }
+    }
+  } catch (_) {}
+  setTimeout(ver, 2000);
+}
+setTimeout(ver, 2000);
+</script>
+{% endif %}
+{% endblock %}

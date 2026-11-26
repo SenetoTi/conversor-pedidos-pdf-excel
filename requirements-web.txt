@@ -1,0 +1,12 @@
+# Site do Conversor (web/). O motor de leitura de PDF usa também: pymupdf, rapidocr-onnxruntime, pillow, pdfplumber, pypdf
+fastapi
+uvicorn
+python-multipart
+jinja2
+psycopg[binary]
+python-docx
+openpyxl
+pymupdf
+rapidocr-onnxruntime
+pillow
+httpx  # só para os testes (test_web.py)
