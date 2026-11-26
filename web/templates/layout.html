@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conversor de Pedidos - {{ NOME_SISTEMA }}</title>
+<style>
+:root{--azul:#1F4E78;--azul2:#2E75B6;--gelo:#E6EEF6;--fundo:#F5F7FA;--borda:#D9DEE5;--texto:#1B2430;--sec:#5B6675;--ok-f:#E2EFDA;--ok-t:#375623;--er-f:#FFC7CE;--er-t:#9C0006;--av-f:#FFF2CC;--av-t:#7F6000}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:min(96vw,80rem);margin:1.5rem auto;padding:0 1rem;background:var(--fundo);color:var(--texto);line-height:1.45}
+h1,h2{color:var(--azul)}a{color:var(--azul2)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--azul2);outline-offset:2px}
+header.topo{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;border-bottom:1px solid var(--borda);padding-bottom:.6rem;margin-bottom:1.2rem}
+header.topo .sistema{font-weight:700;color:var(--azul);font-size:1.1rem}header.topo .quem{margin-left:auto;color:var(--sec);font-size:.9rem}
+.btn,main a.btn{display:inline-flex;align-items:center;min-height:44px;padding:.4rem 1rem;border:1px solid var(--azul2);border-radius:6px;background:#fff;color:var(--azul);text-decoration:none;font-size:.95rem}
+.btn:hover{background:var(--gelo)}.btn[aria-current=page]{background:var(--azul);border-color:var(--azul);color:#fff;font-weight:600}
+button{min-height:44px;padding:.4rem 1rem;background:var(--azul);color:#fff;border:0;border-radius:6px;cursor:pointer}button:hover{background:#17405F}button:disabled{background:#9aa6b4}
+button.principal{background:#2E7D32;font-weight:600}button.principal:hover{background:#1B5E20}
+.abas{display:flex;gap:.5rem;margin:.5rem 0 1rem}
+.cartao{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:1rem 1.2rem;margin-bottom:1rem}
+label{display:block;margin:.7rem 0}input[type=text],input[type=file]{width:100%;padding:.5rem;min-height:44px;border:1px solid #8a94a3;border-radius:6px;background:#fff}
+label.marcar{display:flex;gap:.5rem;align-items:center}label.marcar input{width:auto;min-height:0}
+.guia{color:var(--sec);max-width:60rem}
+.aviso{padding:.7rem 1rem;border-radius:6px;margin:.7rem 0}.aviso.ok{background:var(--ok-f);color:var(--ok-t)}.aviso.erro{background:var(--er-f);color:var(--er-t)}.aviso.atencao{background:var(--av-f);color:var(--av-t)}
+table{border-collapse:collapse;width:100%;background:#fff}th{background:var(--gelo);color:var(--azul);text-align:left}td,th{border-bottom:1px solid var(--borda);padding:.45rem .6rem}td.n{text-align:right}
+pre.log{background:#fff;border:1px solid var(--borda);border-radius:6px;padding:.6rem;max-height:20rem;overflow:auto;font-size:.8rem;white-space:pre-wrap}
+</style></head><body>
+<header class="topo">
+<span class="sistema">{{ NOME_SISTEMA }}</span>
+<a class="btn" href="/">Aplicativos</a>
+<a class="btn" href="{{ PREFIXO }}/" {% if pagina_atual == 'converter' %}aria-current="page"{% endif %}>Converter</a>
+{% if admin %}<a class="btn" href="{{ PREFIXO }}/base" {% if pagina_atual == 'base' %}aria-current="page"{% endif %}>Atualizar base</a>{% endif %}
+<span class="quem">{{ email }}</span>
+</header>
+<main>{% block corpo %}{% endblock %}</main>
+</body></html>

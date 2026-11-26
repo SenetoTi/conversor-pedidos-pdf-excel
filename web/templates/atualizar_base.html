@@ -1,0 +1,22 @@
+{% extends "layout.html" %}{% set pagina_atual = 'base' %}{% block corpo %}
+<h1>Atualizar base de produtos</h1>
+<p class="guia">Cada envio troca só a sua parte da base. Os pedidos novos já usam os dados atualizados.</p>
+{% if mensagem %}<p class="aviso ok" role="status">{{ mensagem }}</p>{% endif %}
+{% if erro %}<p class="aviso erro" role="alert">{{ erro }}</p>{% endif %}
+{% if avisos %}<div class="aviso atencao"><strong>Avisos da importação:</strong><ul>{% for a in avisos[:15] %}<li>{{ a }}</li>{% endfor %}</ul>{% if avisos|length > 15 %}<p>E mais {{ avisos|length - 15 }} aviso(s).</p>{% endif %}</div>{% endif %}
+{% if sem_banco %}<p class="aviso erro" role="alert">Banco de dados não configurado ou indisponível (DATABASE_URL).</p>{% endif %}
+<table>
+<thead><tr><th>Arquivo</th><th>Para que serve</th><th class="n">Linhas</th><th>Última atualização</th><th>Por</th><th>Enviar novo</th></tr></thead>
+<tbody>
+{% for tipo, nome, descricao in tipos %}{% set u = ultimas.get(tipo) %}
+<tr><td>{{ nome }}</td><td>{{ descricao }}</td>
+<td class="n">{{ u.linhas if u else '-' }}</td><td>{{ u.data.strftime('%d/%m/%Y %H:%M') if u else 'nunca' }}</td><td>{{ u.email if u else '' }}</td>
+<td><form method="post" action="{{ PREFIXO }}/base/{{ tipo }}" enctype="multipart/form-data">
+<input type="file" name="arquivo" required aria-label="Arquivo {{ nome }}"><button type="submit">Enviar</button></form></td></tr>
+{% endfor %}
+</tbody></table>
+<h2>Histórico</h2>
+{% if historico %}<table><thead><tr><th>Data</th><th>Tipo</th><th>Arquivo</th><th class="n">Linhas</th><th>Por</th></tr></thead><tbody>
+{% for data, tipo, arquivo, linhas, quem in historico %}<tr><td>{{ data.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ tipo }}</td><td>{{ arquivo }}</td><td class="n">{{ linhas }}</td><td>{{ quem }}</td></tr>{% endfor %}
+</tbody></table>{% else %}<p class="guia">Nenhuma atualização ainda.</p>{% endif %}
+{% endblock %}

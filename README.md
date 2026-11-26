@@ -130,3 +130,24 @@ Atalhos no Windows (clique duas vezes; a janela só fecha quando você aperta um
 ## Privacidade
 
 PDFs, planilhas e logs são ignorados pelo git (veja `.gitignore`). Nenhum dado de cliente faz parte do código.
+
+## Site (pasta `web/`)
+
+Roda dentro da Central de Gestão, atrás do Caddy do Conciliador. Não tem login próprio: o Caddy faz o login e manda o e-mail em `X-Usuario-Email`; sem esse cabeçalho o site responde 403. Por isso ele só escuta em `127.0.0.1`.
+
+```
+pip install -r requirements-web.txt
+set DATABASE_URL=postgresql://USUARIO:SENHA@localhost:5432/conversor
+set ADMIN_EMAILS=guilherme@empresa.com,outro@empresa.com
+python -m uvicorn web.app:app --host 127.0.0.1 --port 8225 --proxy-headers
+```
+
+- `/conversor/`: Converter, com as abas Pedido de compra (campo Fidelidade da NF, forçar OCR) e Qualquer PDF. Mostra o andamento e entrega o Excel; PDF e Excel temporários são apagados depois do download (ou em 1 hora) e na subida do site. Uma conversão por vez.
+- `/conversor/base`: Atualizar base, só para e-mails em `ADMIN_EMAILS`. Três envios (`AtualiProdutos.csv`, `tipi.docx`, `todos_os_produtos.xlsx`), quadro com linhas e data da última atualização e histórico.
+- Sem `DATABASE_URL`, o pedido sai sem as colunas da base e a tela avisa.
+
+```
+python test_web.py   # com TEST_DATABASE_URL para a parte da base
+```
+
+Instalação no Windows (banco, `iniciar.bat`, cadastro na tela Aplicativos): Etapa 5, não verificado no Windows.
