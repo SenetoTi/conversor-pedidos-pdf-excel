@@ -64,6 +64,7 @@ def test_telas(c):
     r = c.get("/conversor/", headers=USUARIO)
     assert r.status_code == 200 and "Pedido de compra" in r.text and "Fidelidade da NF" in r.text
     assert "Atualizar base" not in r.text  # o link só aparece para admin
+    assert 'src="data:image/png;base64,' in r.text  # ícone do Conversor no cabeçalho
     r = c.get("/conversor/?aba=generico", headers=USUARIO)
     assert "Qualquer PDF" in r.text and "Fidelidade" not in r.text
     assert "Atualizar base" in c.get("/conversor/", headers=ADMIN).text
