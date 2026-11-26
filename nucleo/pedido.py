@@ -44,6 +44,9 @@ def normalizar_linha_ocr(texto):
     # Elimina espaços espúrios entre vírgula/ponto e dígitos numéricos (6, 000 -> 6,000 | 20. 36 -> 20,36 | 360, 000 -> 360,000)
     t = re.sub(r'(\d+)[,\.]\s+(\d+)', r'\1,\2', t)
 
+    # Milhar lido como vírgula (6,000,00 -> 6.000,00)
+    t = re.sub(r'(?<![\d,.])(\d{1,3}),(\d{3}),(\d{2})(?![\d,.])', r'\1.\2,\3', t)
+
     # Converte ponto isolado de preço em vírgula (ex: 3.46 -> 3,46 | 5.50 -> 5,50), sem alterar dimensões (1.3L, 2.5L)
     t = re.sub(r'(?<=\s)(\d{1,4})\.(\d{2})(?=\s|$)', r'\1,\2', t)
 
@@ -260,6 +263,10 @@ def extrair_produtos_inteligente(linhas):
             'inscrição estadual', 'insc. estad', 'condição de pagamento',
             'telefone:', 'email:', 'status: aberto', 'endereço:', 'endereco:'
         ]):
+            continue
+
+        # Cabeçalho de página: "Insc.Estad.:0035..." (o número de 13 dígitos parece um EAN) e "Pagina 2 de 2"
+        if re.search(r'insc\.?\s*estad|p[áa]gina\s+\d+\s+de\s+\d+', l_norm, re.IGNORECASE):
             continue
 
         candidata = (buffer_linha + " " + l_norm).strip() if buffer_linha else l_norm
