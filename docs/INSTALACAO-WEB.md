@@ -2,7 +2,7 @@
 
 Versão: 1.0 (26/11/2026). O site do Conversor roda na mesma máquina do Conciliador, escuta só em `127.0.0.1:8225` e é entregue pelo Caddy na porta 8215, com o login do Conciliador.
 
-**Status:** o código do site foi testado no Linux (`python test_web.py`). **Não verificado no Windows:** todos os passos abaixo, os `.bat`, a tarefa do Agendador, o cadastro em Aplicativos e a primeira importação da base com os arquivos reais. Os itens que dependem do Caddy dependem também do guia do Conciliador (`07-INSTALACAO-LOCAL.md`, passo 7-A).
+**Status:** o código do site foi testado no Linux (`python test_web.py`). **Verificado no Windows em 26/11/2026:** banco, variáveis, site pela porta 8215 com login, cadastro em Aplicativos, importação da base com os arquivos reais e conversão de um pedido. **Não verificado no Windows:** subir sozinho depois de reiniciar a máquina, usuário sem acesso (403), usuário fora de `ADMIN_EMAILS`, `atualizar_web.bat` e `reiniciar_web.bat`. Os itens que dependem do Caddy dependem também do guia do Conciliador (`07-INSTALACAO-LOCAL.md`, passo 7-A).
 
 No PowerShell, rode scripts da pasta atual com `.\` na frente (ex.: `.\instalar_web.bat`).
 
@@ -47,27 +47,39 @@ Não precisa de `SECRET_KEY` nem de pasta de arquivos: o login é do Conciliador
 ```
 No navegador da própria máquina, abra `http://localhost:8225/conversor/status`: deve aparecer `{"ok":true}`. Feche a janela do site (Ctrl+C) antes do passo 6.
 
-`http://localhost:8225/conversor/` direto dá "Acesso só pela Central de Gestão" (403). Isso é o esperado: o e-mail só chega pelo Caddy.
+`http://localhost:8225/conversor/` direto dá "Acesso só pela Central de Gestão" (403). Isso é o esperado: o e-mail só chega pelo Caddy. Para abrir o site, use sempre a porta 8215.
 
 ## 6. Subir sozinho ao ligar
-Num terminal **como administrador**, na pasta do projeto:
+**Opção A, pelo script.** Num terminal **como administrador** (PowerShell: botão direito > Executar como administrador; confira com `net session`, que não deve dar "Acesso negado"), na pasta do projeto:
 ```
 .\agendar_web.bat
 ```
-Ele cria a tarefa `ConversorWeb` (ao ligar a máquina, com o seu usuário do Windows) e pede a senha desse usuário. A tarefa usa o seu usuário porque as variáveis do passo 4 são dele. Depois confira `http://localhost:8225/conversor/status` de novo. Reinicie a máquina uma vez para ver se sobe sozinho.
+Ele cria a tarefa `ConversorWeb` (ao ligar a máquina, com o seu usuário do Windows) e pede a senha desse usuário. A tarefa usa o seu usuário porque as variáveis do passo 4 são dele. Se aparecer "ERRO: Acesso negado" mesmo como administrador, a conta pode não ter senha ou a senha digitada não é a da conta (em conta Microsoft vale a senha da conta, não o PIN): use a opção B.
+
+**Opção B, pela tela do Agendador de Tarefas** (a mesma do Conciliador, validada no Windows):
+1. Agendador de Tarefas > Criar Tarefa.
+2. Nome: `ConversorWeb`. Marque "Executar estando o usuário conectado ou não" e "Executar com privilégios mais altos".
+3. Gatilho: "Ao iniciar o computador".
+4. Ação: iniciar programa `C:\repositorios\ConvertorPdf\iniciar_web.bat`, com "Iniciar em" `C:\repositorios\ConvertorPdf`.
+5. Usuário: o mesmo da tarefa do Conciliador.
+
+Depois confira `http://localhost:8215/conversor/` (a `localhost:8225` direto dá 403, o que é o esperado). Reinicie a máquina uma vez para ver se sobe sozinho (ainda não verificado).
 
 ## 7. Primeira importação da base
-No terminal, na pasta do projeto, com o ambiente ligado:
+No terminal, na pasta do projeto, use o Python do próprio `.venv` (não precisa ativar o ambiente; em muitos PCs o PowerShell bloqueia o `Activate.ps1`):
 ```
-.\.venv\Scripts\activate
-python -m base criar-schema
-python -m base validar fiscal "C:\caminho\AtualiProdutos.csv"
-python -m base validar precos "C:\caminho\todos_os_produtos.xlsx"
-python -m base validar tipi "C:\caminho\tipi.docx"
+.\.venv\Scripts\python.exe -m base criar-schema
+.\.venv\Scripts\python.exe -m base validar fiscal "C:\caminho\AtualiProdutos.csv"
+.\.venv\Scripts\python.exe -m base validar precos "C:\caminho\todos os produtos.xlsx"
+.\.venv\Scripts\python.exe -m base validar tipi "C:\caminho\tipi.docx"
 ```
-O `validar` só lê o arquivo e mostra os avisos, sem usar o banco. Os números esperados com os arquivos de novembro: fiscal 50.395 linhas, preços 47.621, TIPI 10.516. Se algum aviso parecer estranho, não importe e avise antes.
+Troque `C:\caminho\` pela pasta dos arquivos e confira o nome exato de cada um (aspas por causa dos espaços). Se o `criar-schema` avisar que falta `CONVERSOR_DATABASE_URL`, abra um PowerShell novo (passo 4).
+
+O `validar` só lê o arquivo e mostra os avisos, sem usar o banco. Os números esperados com os arquivos de novembro: fiscal 50.395 linhas, preços 47.621, TIPI 10.516 (validado no Windows em 26/11/2026). Se algum aviso parecer estranho, não importe e avise antes.
 
 Depois, pela tela: abra `http://IP-DA-MAQUINA:8215/conversor/base` (só aparece para os e-mails de `ADMIN_EMAILS`) e envie os três arquivos. O quadro mostra as linhas e a data de cada um. Os arquivos são do Linear e do ERP: não os coloque no repositório.
+
+**Cada envio troca a parte da base daquele arquivo, não acrescenta.** Envie sempre a lista completa exportada do ERP, nunca só os produtos novos: o que não estiver no arquivo sai da base e vira CONFERIR nos pedidos. Se o arquivo vier com erro, o envio é recusado e a base fica como estava.
 
 ## 8. Cadastrar na Central de Gestão
 No Conciliador, entre como admin: Configurações > Aplicativos. Cadastre:
