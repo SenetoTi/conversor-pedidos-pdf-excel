@@ -391,8 +391,10 @@ def extrair_produtos_inteligente(linhas):
 # SEÇÃO 4: PROCESSO COMPLETO DE CONVERSÃO E GERAÇÃO DO EXCEL NO PADRÃO
 # ==============================================================================
 
-def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callback_log=None):
+def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callback_log=None, conexao=None, fidelidade=""):
     """
+    Se `conexao` (base de produtos) for dada, a planilha ganha as colunas da base depois do Total;
+    `fidelidade` é o texto livre da Fidelidade da NF (vazio = coluna vazia). Sem `conexao`, sai como antes.
     Processa o PDF integralmente (página por página), executa OCR com reconstrução
     espacial 2D se necessário, identifica empresas/filiais e seus produtos cadastrados
     e gera a planilha Excel no padrão pré-estabelecido.
@@ -543,9 +545,68 @@ def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callbac
             "Isso ativa o OCR de alta precisão 100% automático no Python!"
         )
 
-    # ==========================================================================
-    # GERAÇÃO DA PLANILHA EXCEL FORMATADA (PADRÃO PRÉ-ESTABELECIDO)
-    # ==========================================================================
+    return gerar_planilha(pedidos_filiais, caminho_excel, log, conexao=conexao, fidelidade=fidelidade)
+
+
+# ==============================================================================
+# GERAÇÃO DA PLANILHA EXCEL FORMATADA (PADRÃO PRÉ-ESTABELECIDO)
+# ==============================================================================
+
+COLUNAS_BASE = [
+    "Preço de venda", "NCM", "CEST", "IPI (%)", "Qtd. embalagem", "Valor Tabela comprado", "Fidelidade da NF",
+]
+CONFERIR = "CONFERIR"
+
+
+def _dados_da_base(conexao, pedidos_filiais):
+    """Busca em lote (uma vez por pedido). Devolve {id(produto): Produto da base}."""
+    from base import buscar_produtos
+    itens, achados = [], []
+    for filial in pedidos_filiais.values():
+        for prod in filial['produtos']:
+            itens.append((prod.get('cod_barras', ''), prod.get('codigo_erp', '')))
+            achados.append(prod)
+    if not itens:
+        return {}
+    return {id(prod): dado for prod, dado in zip(achados, buscar_produtos(conexao, itens))}
+
+
+def _linha_da_base(dado, fidelidade):
+    """As 7 células da base: lista de (valor, formato, erro). erro=True vira vermelho."""
+    def num(valor):
+        return float(valor) if valor is not None else None
+
+    def ou_conferir(valor, ok, formato):
+        if not ok or valor is None:
+            return (CONFERIR, None, True)
+        return (num(valor) if not isinstance(valor, str) else valor, formato, False)
+
+    if dado is None:
+        dado = type("SemDado", (), {"achou_fiscal": False, "achou_precos": False})()
+    fiscal, precos = dado.achou_fiscal, dado.achou_precos
+    compra = getattr(dado, "compra", None)
+    compra_zero = precos and compra is not None and compra == 0
+    return [
+        ou_conferir(getattr(dado, "venda", None), precos, 'R$ #,##0.00'),
+        ou_conferir(getattr(dado, "ncm", None) or None, fiscal, '@'),
+        (getattr(dado, "cest", "") or "", '@', False) if fiscal else (CONFERIR, None, True),
+        ou_conferir(getattr(dado, "aliquota_ipi", None), fiscal, '0.00"%"'),
+        ou_conferir(getattr(dado, "embalagem", None), precos, '#,##0.####'),
+        (num(compra), 'R$ #,##0.00', True) if compra_zero else ou_conferir(compra, precos, 'R$ #,##0.00'),
+        (fidelidade or "", '@', False),
+    ]
+
+
+def gerar_planilha(pedidos_filiais, caminho_excel, log=lambda msg: None, conexao=None, fidelidade=""):
+    """Escreve a planilha a partir dos pedidos já lidos. Devolve (filiais, avisos)."""
+    com_base = conexao is not None
+    dados_base = _dados_da_base(conexao, pedidos_filiais) if com_base else {}
+    if not com_base:
+        log("Base de produtos não configurada: planilha gerada sem as colunas da base.")
+    fidelidade = (fidelidade or "").strip()
+    col_conf = 9 + (len(COLUNAS_BASE) if com_base else 0)  # coluna do aviso "CONFERIR" da linha
+    ultima_col = col_conf if com_base else 8
+
     wb = Workbook()
     ws = wb.active
     ws.title = "Pedidos por Filial"
@@ -628,6 +689,8 @@ def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callbac
             "Preço Unit.",
             "Total"
         ]
+        if com_base:
+            colunas_tabela = colunas_tabela + COLUNAS_BASE + ["Conferência"]
 
         for col_idx, col_nome in enumerate(colunas_tabela, start=1):
             cell = ws.cell(row=num_linha, column=col_idx, value=col_nome)
@@ -649,7 +712,7 @@ def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callbac
             if abs(prod['quant_num'] * prod['preco_num'] - prod['total_num']) > 0.05:
                 bg = fill_suspeito
                 avisos += 1
-                ws.cell(row=num_linha, column=9, value="CONFERIR: quant. x preço ≠ total").font = fonte_suspeito
+                ws.cell(row=num_linha, column=col_conf, value="CONFERIR: quant. x preço ≠ total").font = fonte_suspeito
 
             # Cód. Forn
             c = ws.cell(row=num_linha, column=1, value=prod['cod_forn'])
@@ -712,6 +775,22 @@ def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callbac
             if bg: c.fill = bg
             soma_total += prod['total_num']
 
+            if com_base:
+                for k, (valor, formato, erro) in enumerate(_linha_da_base(dados_base.get(id(prod)), fidelidade)):
+                    c = ws.cell(row=num_linha, column=9 + k, value=valor)
+                    c.font = fonte_suspeito if erro else fonte_normal
+                    c.alignment = Alignment(horizontal="center" if valor == CONFERIR else ("left" if k == 6 else "right"), vertical="center")
+                    if formato:
+                        c.number_format = formato
+                    c.border = borda_fina
+                    if erro:
+                        c.fill = fill_suspeito
+                    elif bg:
+                        c.fill = bg
+
+                if any(erro for _, _, erro in _linha_da_base(dados_base.get(id(prod)), fidelidade)):
+                    avisos += 1
+
             num_linha += 1
 
         # 5. LINHA DE SUBTOTAIS DA FILIAL
@@ -765,7 +844,7 @@ def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callbac
 
         # 7. LINHA DIVISÓRIA ENTRE FILIAIS
         num_linha += 1
-        for col_idx in range(1, 9):
+        for col_idx in range(1, ultima_col + 1):
             cell = ws.cell(row=num_linha, column=col_idx, value="")
             cell.fill = fill_divisor
             cell.border = borda_divisor
@@ -788,6 +867,9 @@ def extrair_pdf_para_excel(caminho_pdf, caminho_excel, forcar_ocr=False, callbac
         'G': 14,  # Preço Unit.
         'H': 16   # Total
     }
+    if com_base:
+        for letra, largura in zip("IJKLMNOP", (14, 12, 12, 10, 14, 20, 20, 30)):
+            larguras_minimas[letra] = largura
 
     for col_letter, min_w in larguras_minimas.items():
         col_idx = ord(col_letter) - ord('A') + 1
