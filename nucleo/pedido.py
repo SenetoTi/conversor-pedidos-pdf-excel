@@ -318,6 +318,10 @@ def extrair_produtos_inteligente(linhas):
             p_num = limpar_numero(preco_str)
             t_num = limpar_numero(total_str) if total_str else round(q_num * p_num, 2)
 
+            # Coluna "Preço" do pedido (4 casas, ex.: 4,6050): o "Preço Unit" vem arredondado (4,61).
+            # Só vale na linha completa (9 números) e quando tem exatamente 4 casas.
+            preco_exato = limpar_numero(nums[3]) if len(nums) >= 9 and re.fullmatch(r'[\d.]*,\d{4}', nums[3]) else None
+
             # Validação cruzada: se o preço estiver 0 mas tivermos total e quant
             if p_num == 0.0 and q_num > 0 and t_num > 0:
                 p_num = round(t_num / q_num, 2)
@@ -342,7 +346,8 @@ def extrair_produtos_inteligente(linhas):
                 'total': total_str,
                 'quant_num': q_num,
                 'preco_num': p_num,
-                'total_num': t_num
+                'total_num': t_num,
+                'preco_exato': preco_exato
             })
             buffer_linha = ""
 
@@ -563,6 +568,7 @@ COLUNAS_BASE = [
     "Preço de venda", "NCM", "CEST", "IPI (%)", "Qtd. embalagem", "Valor Tabela comprado", "Fidelidade da NF",
 ]
 CONFERIR = "CONFERIR"
+FORMATO_EMBALAGEM = "General"  # o formato "#,##0.####" mostrava "1," (vírgula sobrando) nos inteiros
 
 
 def _dados_da_base(conexao, pedidos_filiais):
@@ -598,7 +604,7 @@ def _linha_da_base(dado, fidelidade):
         ou_conferir(getattr(dado, "ncm", None) or None, fiscal, '@'),
         (getattr(dado, "cest", "") or "", '@', False) if fiscal else (CONFERIR, None, True),
         ou_conferir(getattr(dado, "aliquota_ipi", None), fiscal, '0.00"%"'),
-        ou_conferir(getattr(dado, "embalagem", None), precos, '#,##0.####'),
+        ou_conferir(getattr(dado, "embalagem", None), precos, FORMATO_EMBALAGEM),
         (num(compra), 'R$ #,##0.00', True) if compra_zero else ou_conferir(compra, precos, 'R$ #,##0.00'),
         (fidelidade or "", '@', False),
     ]
@@ -716,7 +722,11 @@ def gerar_planilha(pedidos_filiais, caminho_excel, log=lambda msg: None, conexao
 
             # Validação da linha: quantidade x preço tem que bater com o total lido
             # ponytail: tolerância fixa de R$ 0,05; se o ERP aplicar desconto/frete por item, descontar aqui
-            if abs(prod['quant_num'] * prod['preco_num'] - prod['total_num']) > 0.05:
+            # (vale também o preço de 4 casas do pedido: 144 x 4,61 = 663,84, mas 144 x 4,6050 = 663,12)
+            conta_ok = abs(prod['quant_num'] * prod['preco_num'] - prod['total_num']) <= 0.05
+            if not conta_ok and prod.get('preco_exato') is not None:
+                conta_ok = abs(prod['quant_num'] * prod['preco_exato'] - prod['total_num']) <= 0.05
+            if not conta_ok:
                 bg = fill_suspeito
                 avisos += 1
                 ws.cell(row=num_linha, column=col_conf, value="CONFERIR: quant. x preço ≠ total").font = fonte_suspeito
