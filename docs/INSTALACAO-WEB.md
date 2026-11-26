@@ -31,10 +31,13 @@ Isso cria a pasta `.venv` e instala as bibliotecas (a instalação do OCR pode d
 
 ## 4. Variáveis de ambiente (nunca no repositório)
 Em Configurações do Windows > Variáveis de ambiente (do usuário que roda o sistema), crie:
-- `DATABASE_URL` = `postgresql://conversor:SUASENHA@localhost:5432/conversor`
+- `CONVERSOR_DATABASE_URL` = `postgresql://conversor:SUASENHA@localhost:5432/conversor`
+
+**Atenção:** não use o nome `DATABASE_URL`. Ele já é do Conciliador (aponta para o banco `conciliador`) e não deve ser alterado. O Conversor só lê `CONVERSOR_DATABASE_URL`, para nunca escrever no banco errado.
+
 - `ADMIN_EMAILS` = os e-mails de quem pode atualizar a base, separados por vírgula (ex.: `guilherme@empresa.com`). Use o mesmo e-mail do login no Conciliador.
 
-Clique OK na janela de variáveis e também em Propriedades do Sistema, senão o Windows não grava. Feche o PowerShell e abra um novo. Para conferir: `echo $env:DATABASE_URL`.
+Clique OK na janela de variáveis e também em Propriedades do Sistema, senão o Windows não grava. Feche o PowerShell e abra um novo. Para conferir: `echo $env:CONVERSOR_DATABASE_URL`.
 
 Não precisa de `SECRET_KEY` nem de pasta de arquivos: o login é do Conciliador e os PDFs e Excel ficam só em pasta temporária, apagados depois do download.
 

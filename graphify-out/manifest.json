@@ -12,9 +12,9 @@
     "semantic_hash": ""
   },
   "base/__main__.py": {
-    "mtime": 1795705202.9111865,
-    "seen": 1795716593.2542503,
-    "ast_hash": "1447b7624bcbe27efb36507971033e0c",
+    "mtime": 1795720865.313232,
+    "seen": 1795720884.2495742,
+    "ast_hash": "f18d9d1d8a3a5ed9118429c857a4eb32",
     "semantic_hash": ""
   },
   "base/busca.py": {
@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "base/conexao.py": {
-    "mtime": 1795705202.9111865,
-    "seen": 1795716593.254253,
-    "ast_hash": "de9f506e85f7c2a6605da1bd1520af7a",
+    "mtime": 1795720865.3117733,
+    "seen": 1795720884.249593,
+    "ast_hash": "c5bb601e8860999dadaaee6b1d1afcc8",
     "semantic_hash": ""
   },
   "base/importadores.py": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795719854.048063,
-    "seen": 1795719854.7512062,
-    "ast_hash": "c3b92c319fdfcc5260f621b67d04ca0c",
+    "mtime": 1795720865.314621,
+    "seen": 1795720884.2497606,
+    "ast_hash": "808420738eb508d7cbd244e1ff3986a5",
     "semantic_hash": ""
   },
   "test_pedido_base.py": {
@@ -108,57 +108,63 @@
     "semantic_hash": ""
   },
   "test_web.py": {
-    "mtime": 1795719840.6425798,
-    "seen": 1795719854.751203,
-    "ast_hash": "2a76516201023e44bc8c80648ce5bad6",
+    "mtime": 1795720865.3183365,
+    "seen": 1795720884.2497573,
+    "ast_hash": "1aaa59e456261a9ee3abaa6191f89a09",
     "semantic_hash": ""
   },
   "web/__init__.py": {
-    "mtime": 1795719752.908064,
-    "seen": 1795719854.751204,
+    "mtime": 1795719974.9840717,
+    "seen": 1795720884.2497585,
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
   "web/app.py": {
-    "mtime": 1795719777.658663,
-    "seen": 1795719854.7512052,
-    "ast_hash": "3b1f3d015e135f94b3482e3868cc486a",
+    "mtime": 1795720865.3166304,
+    "seen": 1795720884.2497594,
+    "ast_hash": "a64e39c6a30b7d2160a68bd723519999",
     "semantic_hash": ""
   },
   "requirements-web.txt": {
-    "mtime": 1795719854.0375948,
-    "seen": 1795719854.751207,
+    "mtime": 1795719974.9840717,
+    "seen": 1795720884.2497633,
     "ast_hash": "31d75318ae508a350969af599e187fd4",
     "semantic_hash": ""
   },
   "web/templates/atualizar_base.html": {
-    "mtime": 1795719777.6640646,
-    "seen": 1795719854.7512088,
+    "mtime": 1795719974.9840717,
+    "seen": 1795720884.249765,
     "ast_hash": "d34af222f6e085c5e35ef9a614430c15",
     "semantic_hash": ""
   },
   "web/templates/converter.html": {
-    "mtime": 1795719777.662213,
-    "seen": 1795719854.75121,
+    "mtime": 1795719974.985607,
+    "seen": 1795720884.2497656,
     "ast_hash": "e15ff31272de812a117ba26d4b258494",
     "semantic_hash": ""
   },
   "web/templates/erro.html": {
-    "mtime": 1795719777.6611512,
-    "seen": 1795719854.751211,
+    "mtime": 1795719974.985607,
+    "seen": 1795720884.2497666,
     "ast_hash": "191e47433430191a86d5fda3562651b8",
     "semantic_hash": ""
   },
   "web/templates/layout.html": {
-    "mtime": 1795719777.6600618,
-    "seen": 1795719854.751212,
+    "mtime": 1795719974.985607,
+    "seen": 1795720884.2497675,
     "ast_hash": "8fde190f4f15f6cba0b10efd2e90849e",
     "semantic_hash": ""
   },
   "web/templates/trabalho.html": {
-    "mtime": 1795719777.6632624,
-    "seen": 1795719854.7512128,
+    "mtime": 1795719974.985607,
+    "seen": 1795720884.2497687,
     "ast_hash": "cd792c948c3209993a57a03707d8a9c7",
+    "semantic_hash": ""
+  },
+  "docs/INSTALACAO-WEB.md": {
+    "mtime": 1795720865.3583236,
+    "seen": 1795720884.2497618,
+    "ast_hash": "654f5e628c2f5125418a2fdb19d7f5ac",
     "semantic_hash": ""
   }
 }

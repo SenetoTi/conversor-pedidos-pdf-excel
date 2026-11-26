@@ -2,7 +2,7 @@
 
 Sem login próprio: o Caddy faz o login (forward_auth) e manda o e-mail em X-Usuario-Email.
 Sem esse cabeçalho o pedido recebe 403. Só e-mails de ADMIN_EMAILS (separados por vírgula) atualizam a base.
-Variáveis de ambiente: DATABASE_URL (banco "conversor"), ADMIN_EMAILS, NOME_SISTEMA.
+Variáveis de ambiente: CONVERSOR_DATABASE_URL (banco "conversor"; a DATABASE_URL é do Conciliador e não é usada aqui), ADMIN_EMAILS, NOME_SISTEMA.
 """
 import os
 import re
@@ -94,7 +94,7 @@ async def erro_http(request: Request, exc: HTTPException):
 
 def abrir_banco():
     """Conexão com a base de produtos, ou None se não estiver configurada/acessível."""
-    if not os.environ.get("DATABASE_URL"):
+    if not os.environ.get("CONVERSOR_DATABASE_URL"):
         return None
     try:
         import base
@@ -175,7 +175,7 @@ def meu_trabalho(id_, email):
 @rotas.get("/", response_class=HTMLResponse)
 def converter(request: Request, email=Depends(usuario)):
     return pagina(request, "converter.html", email, aba=request.query_params.get("aba", "pedido"),
-                  com_base=bool(os.environ.get("DATABASE_URL")))
+                  com_base=bool(os.environ.get("CONVERSOR_DATABASE_URL")))
 
 
 @rotas.post("/pedido")

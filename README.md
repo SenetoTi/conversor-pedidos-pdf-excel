@@ -63,7 +63,7 @@ Guarda no PC os dados que completam o pedido, para ninguém precisar enviar plan
 
 ```powershell
 pip install "psycopg[binary]" python-docx openpyxl
-$env:DATABASE_URL = "postgresql://USUARIO:SENHA@localhost:5432/conversor"   # banco "conversor", separado do Conciliador
+$env:CONVERSOR_DATABASE_URL = "postgresql://USUARIO:SENHA@localhost:5432/conversor"   # banco "conversor", separado do Conciliador
 python -m base criar-schema
 python -m base validar fiscal AtualiProdutos.csv      # só lê e mostra avisos, sem banco
 python -m base fiscal AtualiProdutos.csv --email voce@empresa
@@ -137,14 +137,14 @@ Roda dentro da Central de Gestão, atrás do Caddy do Conciliador. Não tem logi
 
 ```
 pip install -r requirements-web.txt
-set DATABASE_URL=postgresql://USUARIO:SENHA@localhost:5432/conversor
+set CONVERSOR_DATABASE_URL=postgresql://USUARIO:SENHA@localhost:5432/conversor
 set ADMIN_EMAILS=guilherme@empresa.com,outro@empresa.com
 python -m uvicorn web.app:app --host 127.0.0.1 --port 8225 --proxy-headers
 ```
 
 - `/conversor/`: Converter, com as abas Pedido de compra (campo Fidelidade da NF, forçar OCR) e Qualquer PDF. Mostra o andamento e entrega o Excel; PDF e Excel temporários são apagados depois do download (ou em 1 hora) e na subida do site. Uma conversão por vez.
 - `/conversor/base`: Atualizar base, só para e-mails em `ADMIN_EMAILS`. Três envios (`AtualiProdutos.csv`, `tipi.docx`, `todos_os_produtos.xlsx`), quadro com linhas e data da última atualização e histórico.
-- Sem `DATABASE_URL`, o pedido sai sem as colunas da base e a tela avisa.
+- Sem `CONVERSOR_DATABASE_URL`, o pedido sai sem as colunas da base e a tela avisa.
 
 ```
 python test_web.py   # com TEST_DATABASE_URL para a parte da base
