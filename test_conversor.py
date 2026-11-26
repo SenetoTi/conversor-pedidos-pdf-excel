@@ -91,7 +91,17 @@ def test_resumo_e_milhar_ocr():
     assert (p["quant_num"], p["preco_num"], p["total_num"]) == (240.0, 25.0, 6000.0), p
 
 
+def test_preco_exato():
+    """Coluna "Preço" com 4 casas (4,6050) vira preco_exato; o "Preço Unit" arredondado (4,61) não bate com o total (dados inventados)."""
+    linha = ["ABC-1 100001 7890000000011 CANECA TESTE UN 1 144,000 4,61 0,00 4,6050 0,00 0,000 0,00 0,00 663,12"]
+    (p,) = pedido.extrair_produtos_inteligente(linha)
+    assert (p["quant_num"], p["preco_num"], p["preco_exato"], p["total_num"]) == (144.0, 4.61, 4.605, 663.12), p
+    sem = ["ABC-2 100002 7890000000028 ITEM UN 1 12,000 1,32 0,00 15,84"]
+    assert pedido.extrair_produtos_inteligente(sem)[0]["preco_exato"] is None
+
+
 if __name__ == "__main__":
+    test_preco_exato()
     test_resumo_e_milhar_ocr()
     test_generico_texto_corrido()
     test_erros_ocr()

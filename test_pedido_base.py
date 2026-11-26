@@ -62,6 +62,21 @@ def sem_base():
     assert any("Base de produtos não configurada" in m for m in logs), logs
 
 
+def conferencia_do_preco():
+    """144 x 4,61 = 663,84 não bate com 663,12, mas 144 x 4,6050 bate: sem alarme. Sem o preço exato, o alarme continua."""
+    def com(exato):
+        prod = produto("100001", "7890000000011", 144.0, 4.61)
+        prod["total_num"] = 663.12
+        prod["preco_exato"] = exato
+        ped = pedido()
+        ped["01"]["produtos"] = [prod]
+        ped["01"]["total_geral"] = "663,12"
+        return gerar_planilha(ped, os.path.join(test_base.PASTA, "preco.xlsx"))[1]
+    assert com(4.605) == 0
+    assert com(None) == 1
+    assert com(4.0) == 1  # preço exato que também não bate: continua avisando
+
+
 def com_base(url):
     schema = "teste_" + uuid.uuid4().hex[:10]
     conn = base.conectar(url, schema=schema)
@@ -85,6 +100,7 @@ def com_base(url):
         # 1: achou por barras. venda, NCM, CEST, IPI, embalagem, compra, fidelidade (sem espaços nas pontas)
         assert valores(0) == [20, "70134100", "14.001.00", 10, 36, 8.22, "NF 123 fidelidade"], valores(0)
         assert not any(vermelho(linhas[0][n]) for n in COLUNAS_BASE)
+        assert linhas[0]["Qtd. embalagem"].number_format == "General"  # sem vírgula sobrando ("1," no Excel)
         # 2: barras desconhecido, achou pelo código; compra zero em vermelho, sem ser CONFERIR
         assert valores(1)[:2] == [0, "95030099"] and valores(1)[5] == 0, valores(1)
         assert vermelho(linhas[1]["Valor Tabela comprado"]) and not vermelho(linhas[1]["NCM"])
@@ -110,6 +126,7 @@ def com_base(url):
 
 
 def main():
+    conferencia_do_preco()
     sem_base()
     print("Sem base OK")
     url = os.environ.get("TEST_DATABASE_URL")
