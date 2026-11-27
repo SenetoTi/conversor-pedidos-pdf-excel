@@ -7,8 +7,10 @@
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:min(96vw,80rem);margin:1.5rem auto;padding:0 1rem;background:var(--fundo);color:var(--texto);line-height:1.45}
 h1,h2{color:var(--azul)}a{color:var(--azul2)}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--azul2);outline-offset:2px}
-header.topo{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;border-bottom:1px solid var(--borda);padding-bottom:.6rem;margin-bottom:1.2rem}
-header.topo .icone{border-radius:7px}header.topo .sistema{font-weight:700;color:var(--azul);font-size:1.1rem}header.topo .quem{margin-left:auto;color:var(--sec);font-size:.9rem}
+header.topo{display:flex;flex-wrap:wrap;gap:.3rem .4rem;align-items:center;border-bottom:1px solid var(--borda);padding-bottom:.4rem;margin-bottom:1rem}
+header.topo .btn{min-height:36px;padding:.2rem .65rem;font-size:.9rem}header.topo .sistema{margin-right:.5rem}
+@media(max-width:640px){header.topo .btn{min-height:44px}}
+header.topo .icone{border-radius:7px;width:28px;height:28px}header.topo .sistema{font-weight:700;color:var(--azul);font-size:1rem}header.topo .quem{margin-left:auto;color:var(--sec);font-size:.9rem}
 .btn,main a.btn{display:inline-flex;align-items:center;min-height:44px;padding:.4rem 1rem;border:1px solid var(--azul2);border-radius:6px;background:#fff;color:var(--azul);text-decoration:none;font-size:.95rem}
 .btn:hover{background:var(--gelo)}.btn[aria-current=page]{background:var(--azul);border-color:var(--azul);color:#fff;font-weight:600}
 button{min-height:44px;padding:.4rem 1rem;background:var(--azul);color:#fff;border:0;border-radius:6px;cursor:pointer}button:hover{background:#17405F}button:disabled{background:#9aa6b4}
